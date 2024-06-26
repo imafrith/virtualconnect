@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://kit.fontawesome.com/64d58efce2.js" crossorigin="anonymous"></script>
+    <link rel='stylesheet' type='text/css' media='screen' href="{% static 'styles/front.css' %}">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <title>lobby</title>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="forms-container">
+            <div class="signin-signup">
+                <form id="form">
+                    <h2 class="title">lobby</h2>
+                    <div class="input-field">
+                        <i class="fas fa-users"></i>
+                        <input type="text" placeholder="Room name" id="username" name="room" Required>
+                    </div>
+                    <div class="input-field">
+                        <i class="fas fa-user"></i>
+                        <input type="text" placeholder="Name" id="pass1" name="name" Required>
+                    </div>
+                    <button type="submit" value="Login" class="btn solid">join stream</form>
+
+            </div>
+        </div>
+
+        <div class="panels-container">
+            <div class="panel left-panel">
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    <strong>Message:</strong> {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                {% endfor %}
+                <div class="content">
+                    <h3>Hello {{fname}}!</h3>
+                    <a href="/signout">
+                     <button type="submit" value="sign up" class="btn transparent" id="sign-up-btn">
+                        signout
+                     </button>
+                    </a>
+                </div>
+                <img src="{% static 'images/group.svg' %}" class="image" alt="" />
+            </div>
+        </div>
+    </div>
+<script>
+    let form = document.getElementById('form')
+
+    let handleSubmit = async (e) => {
+        e.preventDefault()
+        let room = e.target.room.value.toUpperCase()
+        let name = e.target.name.value
+
+        let response = await fetch(`/get_token/?channel=${room}`)
+        let data = await response.json()
+
+        let UID = data.uid
+        let token = data.token
+
+        sessionStorage.setItem('UID', UID)
+        sessionStorage.setItem('token', token)
+        sessionStorage.setItem('room', room)
+        sessionStorage.setItem('name', name)
+
+        window.open('/room/', '_self')
+    }
+
+
+
+    form.addEventListener('submit', handleSubmit)
+</script>
+
+</body>
+
+</html>
+
+
